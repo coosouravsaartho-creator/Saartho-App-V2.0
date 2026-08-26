@@ -23,7 +23,13 @@ import {
   LogOut,
   UserPlus,
   Truck,
-  FolderTree
+  FolderTree,
+  FileText,
+  FileCheck,
+  ClipboardList,
+  RotateCcw,
+  CreditCard,
+  ArrowDownLeft,
 } from 'lucide-react';
 
 interface SidebarProps {
@@ -38,6 +44,8 @@ interface SidebarProps {
   onOpenAddBuyer?: () => void;
   onOpenAddSupplier?: () => void;
   onOpenPartyGrouping?: () => void;
+  selectedSaleType?: string;
+  onSelectSaleType?: (saleType: string) => void;
 }
 
 export function Sidebar({
@@ -52,14 +60,23 @@ export function Sidebar({
   onOpenAddBuyer,
   onOpenAddSupplier,
   onOpenPartyGrouping,
+  selectedSaleType = 'Sale invoices',
+  onSelectSaleType,
 }: SidebarProps) {
   const [isPartiesDropdownOpen, setIsPartiesDropdownOpen] = useState(false);
+  const [isSaleDropdownOpen, setIsSaleDropdownOpen] = useState(activeTab === 'sale');
+
+  useEffect(() => {
+    if (activeTab === 'sale') {
+      setIsSaleDropdownOpen(true);
+    }
+  }, [activeTab]);
 
   const menuItems: { id: ActiveTab; label: string; icon: React.ElementType; badge?: string | number; badgeColor?: string }[] = [
     { id: 'home', label: 'Home (Dashboard)', icon: Home },
     { id: 'parties', label: 'Parties', icon: Users },
     { id: 'items', label: 'Items & Services', icon: Package, badge: lowStockCount > 0 ? `${lowStockCount} Low` : undefined, badgeColor: 'bg-amber-500 text-slate-950 font-bold' },
-    { id: 'sale', label: 'Sale Bills', icon: TrendingUp, badge: unpaidSaleCount > 0 ? `${unpaidSaleCount} Due` : undefined, badgeColor: 'bg-rose-500 text-white' },
+    { id: 'sale', label: 'Sale', icon: TrendingUp, badge: unpaidSaleCount > 0 ? `${unpaidSaleCount} Due` : undefined, badgeColor: 'bg-rose-500 text-white' },
     { id: 'purchase', label: 'Purchase Bills', icon: ShoppingCart },
     { id: 'expenses', label: 'Expenses', icon: Receipt },
     { id: 'cash_bank', label: 'Cash & Bank', icon: Landmark },
@@ -177,6 +194,85 @@ export function Sidebar({
                       <FolderTree className="w-3.5 h-3.5 text-amber-400 group-hover:scale-110 transition-transform" />
                       <span>3. Party Grouping</span>
                     </button>
+                  </div>
+                )}
+              </div>
+            );
+          }
+
+          // Special Sale Menu Item with Dropdown on click
+          if (item.id === 'sale') {
+            const saleOptions = [
+              { id: 'sale_invoices', label: 'Sale invoices', icon: FileText },
+              { id: 'estimate_quotation', label: 'Estimate/ Quotation', icon: FileCheck },
+              { id: 'proforma_invoice', label: 'Proforma Invoice', icon: FileText },
+              { id: 'sale_order', label: 'Sale Order', icon: ClipboardList },
+              { id: 'delivery_challan', label: 'Delivery Challan', icon: Truck },
+              { id: 'sale_return', label: 'Sale Return', icon: RotateCcw },
+              { id: 'credit_note', label: 'Credit Note', icon: CreditCard },
+              { id: 'payment_in', label: 'Payment In', icon: ArrowDownLeft },
+              { id: 'sale_fixed_assets', label: 'Sale Fixed Assets', icon: Building2 },
+            ];
+
+            return (
+              <div key={item.id} className="relative">
+                <div className="flex items-center">
+                  <button
+                    id="nav-tab-sale"
+                    onClick={() => {
+                      onSelectTab('sale');
+                      setIsSaleDropdownOpen((prev) => !prev);
+                    }}
+                    className={`flex-1 flex items-center justify-between px-3 py-2 rounded-lg text-xs font-medium transition-colors cursor-pointer ${
+                      isActive
+                        ? 'bg-blue-600 text-white shadow-sm font-semibold'
+                        : 'text-slate-300 hover:text-white hover:bg-slate-800'
+                    }`}
+                  >
+                    <div className="flex items-center gap-2.5 min-w-0">
+                      <Icon className={`w-4 h-4 shrink-0 ${isActive ? 'text-white' : 'text-slate-400'}`} />
+                      <span className="truncate">{item.label}</span>
+                    </div>
+                    <div className="flex items-center gap-1">
+                      {item.badge && (
+                        <span
+                          className={`text-[10px] px-1.5 py-0.5 rounded-md font-semibold shrink-0 ${item.badgeColor || 'bg-slate-700 text-slate-200'}`}
+                        >
+                          {item.badge}
+                        </span>
+                      )}
+                      <ChevronDown className={`w-3.5 h-3.5 transition-transform ${isSaleDropdownOpen ? 'rotate-180 text-white' : 'text-slate-400'}`} />
+                    </div>
+                  </button>
+                </div>
+
+                {/* Dropdown Menu when Sale is clicked */}
+                {isSaleDropdownOpen && (
+                  <div className="mt-1 mb-2 ml-4 pl-2 border-l-2 border-emerald-500/40 bg-slate-900/90 rounded-r-xl p-1.5 space-y-0.5 shadow-lg animate-in slide-in-from-top-2 duration-150">
+                    {saleOptions.map((opt) => {
+                      const OptIcon = opt.icon;
+                      const isOptSelected = selectedSaleType === opt.label;
+                      return (
+                        <button
+                          key={opt.id}
+                          id={`sidebar-sale-opt-${opt.id}`}
+                          onClick={() => {
+                            onSelectTab('sale');
+                            if (onSelectSaleType) onSelectSaleType(opt.label);
+                          }}
+                          className={`w-full flex items-center justify-between px-2.5 py-1.5 rounded-lg text-xs font-medium text-left cursor-pointer group transition-colors ${
+                            isOptSelected
+                              ? 'bg-emerald-600/40 text-emerald-200 font-bold border border-emerald-500/30'
+                              : 'text-slate-300 hover:text-white hover:bg-slate-800'
+                          }`}
+                        >
+                          <div className="flex items-center gap-2 min-w-0">
+                            <OptIcon className={`w-3.5 h-3.5 shrink-0 ${isOptSelected ? 'text-emerald-300' : 'text-slate-400 group-hover:text-emerald-300'} transition-colors`} />
+                            <span className="truncate text-[11px]">{opt.label}</span>
+                          </div>
+                        </button>
+                      );
+                    })}
                   </div>
                 )}
               </div>

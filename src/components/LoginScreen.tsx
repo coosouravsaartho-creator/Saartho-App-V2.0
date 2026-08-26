@@ -144,10 +144,10 @@ export function LoginScreen({ currentTheme, onLoginSuccess, onRestoreBackup }: L
                 <span>Our Core Purpose</span>
               </div>
               <h2 className="text-sm font-bold text-slate-100 leading-snug">
-                Complete Accounting, GST Billing &amp; Invoicing for Growing Businesses
+                OUR CORE PURPOSE
               </h2>
               <p className="text-xs text-slate-400 mt-1 leading-relaxed">
-                Empowering businesses with automated invoicing, effortless GST/VAT filings, real-time ledger accounting, inventory tracking, and multi-user cloud synchronization without complex accounting jargon.
+                Our goal is to build a complete business management platform that grows with every business, from a simple offline-first solution today to a powerful, connected and intelligent platform for businesses everywhere tomorrow.
               </p>
             </div>
 

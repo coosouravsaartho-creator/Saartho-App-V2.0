@@ -101,6 +101,7 @@ export default function App() {
   const [selectedInvoiceForDetail, setSelectedInvoiceForDetail] = useState<Invoice | null>(null);
 
   // Party Drawer state (Add Buyer / Add Supplier)
+  const [selectedSaleType, setSelectedSaleType] = useState<string>('Sale invoices');
   const [isPartyDrawerOpen, setIsPartyDrawerOpen] = useState(false);
   const [partyDrawerType, setPartyDrawerType] = useState<'Customer' | 'Supplier'>('Customer');
   const [editingParty, setEditingParty] = useState<Party | null>(null);
@@ -348,6 +349,8 @@ export default function App() {
           setActiveTab('parties');
           setIsGroupingViewOpen(true);
         }}
+        selectedSaleType={selectedSaleType}
+        onSelectSaleType={setSelectedSaleType}
       />
 
       {/* 2. Main Desktop App Workspace */}
@@ -446,6 +449,8 @@ export default function App() {
               invoices={invoices}
               onOpenSaleModal={() => setIsSaleModalOpen(true)}
               onViewInvoice={(inv) => setSelectedInvoiceForDetail(inv)}
+              selectedSaleType={selectedSaleType}
+              onSelectSaleType={setSelectedSaleType}
             />
           )}
 
@@ -573,6 +578,7 @@ export default function App() {
         items={items}
         fiscalYear={fiscalYear}
         onSaveInvoice={handleSaveInvoice}
+        saleType={selectedSaleType}
       />
 
       {/* Purchase Bill Quick Modal */}

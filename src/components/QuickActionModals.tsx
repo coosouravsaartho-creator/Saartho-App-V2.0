@@ -26,6 +26,7 @@ interface SaleBillModalProps {
   items: Item[];
   fiscalYear: FiscalYear;
   onSaveInvoice: (invoice: Invoice) => void;
+  saleType?: string;
 }
 
 export function SaleBillModal({
@@ -35,6 +36,7 @@ export function SaleBillModal({
   items,
   fiscalYear,
   onSaveInvoice,
+  saleType = 'Sale invoices',
 }: SaleBillModalProps) {
   const [selectedPartyId, setSelectedPartyId] = useState(parties[0]?.id || '');
   const [invoiceDate, setInvoiceDate] = useState('2026-08-25');
@@ -156,7 +158,7 @@ export function SaleBillModal({
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <h3 className="text-base font-bold text-slate-900">Create New Sale Invoice</h3>
+                <h3 className="text-base font-bold text-slate-900">Create New {saleType}</h3>
                 <span className="text-[10px] font-semibold uppercase px-2 py-0.5 rounded bg-emerald-100 text-emerald-800">
                   GST Ready
                 </span>

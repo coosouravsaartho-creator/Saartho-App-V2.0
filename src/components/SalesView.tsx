@@ -6,11 +6,33 @@ interface SalesViewProps {
   invoices: Invoice[];
   onOpenSaleModal: () => void;
   onViewInvoice: (inv: Invoice) => void;
+  selectedSaleType?: string;
+  onSelectSaleType?: (type: string) => void;
 }
 
-export function SalesView({ invoices, onOpenSaleModal, onViewInvoice }: SalesViewProps) {
+export function SalesView({
+  invoices,
+  onOpenSaleModal,
+  onViewInvoice,
+  selectedSaleType = 'Sale invoices',
+  onSelectSaleType,
+}: SalesViewProps) {
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState<'All' | 'Paid' | 'Unpaid' | 'Overdue'>('All');
+
+  const saleCategories = [
+    'Sale invoices',
+    'Estimate/ Quotation',
+    'Proforma Invoice',
+    'Sale Order',
+    'Delivery Challan',
+    'Sale Return',
+    'Credit Note',
+    'Payment In',
+    'Sale Fixed Assets',
+  ];
+
+  const currentCategory = selectedSaleType || 'Sale invoices';
 
   const saleInvoices = invoices.filter((i) => i.type === 'Sale');
 
@@ -28,18 +50,46 @@ export function SalesView({ invoices, onOpenSaleModal, onViewInvoice }: SalesVie
   const totalDue = saleInvoices.reduce((sum, i) => sum + i.balanceDue, 0);
 
   return (
-    <div className="p-5 sm:p-6 space-y-6 max-w-7xl mx-auto">
+    <div className="p-5 sm:p-6 space-y-5 max-w-7xl mx-auto">
+      {/* Top Options Bar for Sale Sub-types */}
+      <div className="flex items-center gap-1.5 overflow-x-auto pb-1.5 custom-scrollbar border-b border-slate-200">
+        {saleCategories.map((cat) => {
+          const isSelected = currentCategory === cat;
+          return (
+            <button
+              key={cat}
+              id={`sale-category-tab-${cat.toLowerCase().replace(/[^a-z0-9]/g, '-')}`}
+              onClick={() => onSelectSaleType && onSelectSaleType(cat)}
+              className={`px-3.5 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap transition-all cursor-pointer ${
+                isSelected
+                  ? 'bg-blue-600 text-white shadow-xs'
+                  : 'bg-white text-slate-600 hover:text-slate-900 hover:bg-slate-100 border border-slate-200'
+              }`}
+            >
+              {cat}
+            </button>
+          );
+        })}
+      </div>
+
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-200">
         <div>
-          <h1 className="text-xl font-bold text-slate-900 tracking-tight">Sale Invoices &amp; Billing</h1>
-          <p className="text-xs text-slate-500">Create, manage, and dispatch GST-compliant customer sale invoices.</p>
+          <div className="flex items-center gap-2">
+            <h1 className="text-xl font-bold text-slate-900 tracking-tight">{currentCategory}</h1>
+            <span className="text-[10px] font-extrabold uppercase bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-md">
+              Sale Module
+            </span>
+          </div>
+          <p className="text-xs text-slate-500 mt-0.5">
+            Create, manage, and dispatch GST-compliant customer {currentCategory.toLowerCase()} records.
+          </p>
         </div>
         <button
           onClick={onOpenSaleModal}
-          className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold shadow-xs cursor-pointer"
+          className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold shadow-xs cursor-pointer transition-all active:scale-98"
         >
           <Plus className="w-4 h-4" />
-          <span>+ Create Sale Bill (Ctrl+F1)</span>
+          <span>+ Create {currentCategory}</span>
         </button>
       </div>
 
