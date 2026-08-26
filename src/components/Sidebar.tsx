@@ -113,7 +113,7 @@ export function Sidebar({
           // Special Parties Menu Item with Dropdown on click
           if (item.id === 'parties') {
             return (
-              <div key={item.id} className="relative" ref={partiesDropdownRef}>
+              <div key={item.id} className="relative">
                 <div className="flex items-center">
                   <button
                     id="nav-tab-parties"

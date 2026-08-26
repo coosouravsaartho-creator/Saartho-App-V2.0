@@ -351,9 +351,47 @@ export function PartyFormDrawer({
     (g) => g.groupType === 'All' || g.groupType === (isBuyer ? 'Customer' : 'Supplier')
   );
 
-  // Submit
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
+  const [toastMessage, setToastMessage] = useState<string | null>(null);
+
+  const resetFreshForm = () => {
+    setName('');
+    setPhone('+91 ');
+    setEmail('');
+    setGstin('');
+    setGstinStatus('idle');
+    setGstinDetails(null);
+    setBillingAddresses([
+      {
+        id: `b-addr-${Date.now()}`,
+        label: 'Main Billing Office',
+        addressLine: '',
+        city: 'New Delhi',
+        state: 'Delhi (07)',
+        pincode: '110020',
+        isDefault: true,
+      },
+    ]);
+    setShippingAddresses([
+      {
+        id: `s-addr-${Date.now()}`,
+        label: 'Primary Delivery / Warehouse',
+        addressLine: '',
+        city: 'New Delhi',
+        state: 'Delhi (07)',
+        pincode: '110020',
+        isDefault: true,
+      },
+    ]);
+    setOpeningBalance('0');
+    setOpeningBalanceType(isBuyer ? 'To Receive' : 'To Pay');
+    setOpeningBalanceDate(new Date().toISOString().split('T')[0]);
+    setCreditLimit(isBuyer ? '300000' : '500000');
+    setPaymentTermsDays('30');
+    setCustomFields([]);
+    setSelectedGroupId('');
+  };
+
+  const processSave = (isSaveAndNew: boolean) => {
     if (!name.trim()) return;
 
     const numericBalance = Number(openingBalance) || 0;
@@ -388,7 +426,21 @@ export function PartyFormDrawer({
     };
 
     onSaveParty(partyToSave);
-    onClose();
+
+    if (isSaveAndNew) {
+      setToastMessage(`✓ ${roleTitle} "${partyToSave.name}" saved successfully! Enter details for next party.`);
+      resetFreshForm();
+      setTimeout(() => {
+        setToastMessage(null);
+      }, 5000);
+    } else {
+      onClose();
+    }
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    processSave(false);
   };
 
   if (!isOpen) return null;
@@ -441,6 +493,23 @@ export function PartyFormDrawer({
           {/* 2. Scrollable Body Content */}
           <form id="party-form-drawer" onSubmit={handleSubmit} className="flex-1 overflow-y-auto p-5 sm:p-6 space-y-6 custom-scrollbar text-xs text-slate-800">
             
+            {/* Save & New Success Toast Banner */}
+            {toastMessage && (
+              <div className="p-3.5 rounded-xl bg-emerald-100 border border-emerald-300 text-emerald-900 font-bold text-xs flex items-center justify-between shadow-xs animate-in fade-in slide-in-from-top-1">
+                <div className="flex items-center gap-2">
+                  <CheckCircle2 className="w-4.5 h-4.5 text-emerald-600 shrink-0" />
+                  <span>{toastMessage}</span>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setToastMessage(null)}
+                  className="text-emerald-700 hover:text-emerald-950 p-1 cursor-pointer"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+            )}
+
             {/* Section A: Basic Identification (Name, Phone, Email) */}
             <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200/90 space-y-4">
               <div className="flex items-center gap-2 text-slate-900 font-bold text-xs uppercase tracking-wider pb-1 border-b border-slate-200">
@@ -992,18 +1061,35 @@ export function PartyFormDrawer({
               Cancel
             </button>
 
-            <button
-              type="submit"
-              form="party-form-drawer"
-              className={`px-6 py-2.5 rounded-xl text-xs font-bold text-white shadow-md flex items-center gap-2 cursor-pointer transition-all ${
-                isBuyer
-                  ? 'bg-blue-600 hover:bg-blue-700 shadow-blue-600/20'
-                  : 'bg-emerald-600 hover:bg-emerald-700 shadow-emerald-600/20'
-              }`}
-            >
-              <CheckCircle2 className="w-4 h-4" />
-              <span>Save {roleTitle} Details</span>
-            </button>
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                id="party-drawer-save-and-new-btn"
+                onClick={() => processSave(true)}
+                className={`px-4 py-2.5 rounded-xl text-xs font-bold border-2 flex items-center gap-1.5 cursor-pointer transition-all ${
+                  isBuyer
+                    ? 'border-blue-600 text-blue-700 bg-blue-50/60 hover:bg-blue-100'
+                    : 'border-emerald-600 text-emerald-700 bg-emerald-50/60 hover:bg-emerald-100'
+                }`}
+              >
+                <Plus className="w-4 h-4" />
+                <span>Save &amp; New</span>
+              </button>
+
+              <button
+                type="submit"
+                id="party-drawer-save-btn"
+                form="party-form-drawer"
+                className={`px-5 py-2.5 rounded-xl text-xs font-bold text-white shadow-md flex items-center gap-1.5 cursor-pointer transition-all ${
+                  isBuyer
+                    ? 'bg-blue-600 hover:bg-blue-700 shadow-blue-600/20'
+                    : 'bg-emerald-600 hover:bg-emerald-700 shadow-emerald-600/20'
+                }`}
+              >
+                <CheckCircle2 className="w-4 h-4" />
+                <span>Save</span>
+              </button>
+            </div>
           </div>
 
         </div>
