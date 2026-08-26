@@ -58,7 +58,7 @@ export function Sidebar({
   const menuItems: { id: ActiveTab; label: string; icon: React.ElementType; badge?: string | number; badgeColor?: string }[] = [
     { id: 'home', label: 'Home (Dashboard)', icon: Home },
     { id: 'parties', label: 'Parties', icon: Users },
-    { id: 'items', label: 'Items & Inventory', icon: Package, badge: lowStockCount > 0 ? `${lowStockCount} Low` : undefined, badgeColor: 'bg-amber-500 text-slate-950 font-bold' },
+    { id: 'items', label: 'Items & Services', icon: Package, badge: lowStockCount > 0 ? `${lowStockCount} Low` : undefined, badgeColor: 'bg-amber-500 text-slate-950 font-bold' },
     { id: 'sale', label: 'Sale Bills', icon: TrendingUp, badge: unpaidSaleCount > 0 ? `${unpaidSaleCount} Due` : undefined, badgeColor: 'bg-rose-500 text-white' },
     { id: 'purchase', label: 'Purchase Bills', icon: ShoppingCart },
     { id: 'expenses', label: 'Expenses', icon: Receipt },

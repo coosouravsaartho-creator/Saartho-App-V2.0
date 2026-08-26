@@ -178,6 +178,17 @@ export interface Party {
   groupName?: string;
 }
 
+export type ItemType = 'Product' | 'Service' | 'Raw Material';
+
+export interface UnitMaster {
+  id: string;
+  code: string; // e.g., 'PCS', 'BOX', 'KG'
+  name: string; // e.g., 'Pieces', 'Boxes', 'Kilograms'
+  uqcCode?: string; // e.g. 'PCS-PIECES', 'BOX-BOXES'
+  description?: string;
+  defaultConversion?: string;
+}
+
 export interface Item {
   id: string;
   name: string;
@@ -187,11 +198,17 @@ export interface Item {
   salePrice: number;
   purchasePrice: number;
   stockQty: number;
-  unit: string;
+  unit: string; // Primary Unit (e.g. 'BOX')
+  secondaryUnit1?: string; // Secondary Unit 1 (e.g. 'PACK')
+  secondaryUnit1Rate?: number; // 1 Primary Unit = X Secondary Unit 1 (e.g. 10)
+  secondaryUnit2?: string; // Secondary Unit 2 (e.g. 'PCS')
+  secondaryUnit2Rate?: number; // 1 Secondary Unit 1 = Y Secondary Unit 2 (e.g. 10)
+  itemType?: ItemType; // 'Product' | 'Service' | 'Raw Material'
   minStockLevel: number;
   taxRate: number; // in percentage e.g. 18
   unitsSold: number;
   totalRevenue: number;
+  description?: string;
 }
 
 export interface InvoiceItem {

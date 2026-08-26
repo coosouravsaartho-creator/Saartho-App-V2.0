@@ -13,6 +13,7 @@ import {
   ViewMode,
   Company,
   PartyGroup,
+  UnitMaster,
 } from './types';
 import { THEMES } from './theme';
 import {
@@ -20,6 +21,7 @@ import {
   INITIAL_PARTIES,
   INITIAL_PARTY_GROUPS,
   INITIAL_ITEMS,
+  INITIAL_UNITS,
   INITIAL_INVOICES,
   INITIAL_EXPENSES,
   INITIAL_BANK_ACCOUNTS,
@@ -79,6 +81,7 @@ export default function App() {
   const [parties, setParties] = useState<Party[]>(INITIAL_PARTIES);
   const [partyGroups, setPartyGroups] = useState<PartyGroup[]>(INITIAL_PARTY_GROUPS);
   const [items, setItems] = useState<Item[]>(INITIAL_ITEMS);
+  const [units, setUnits] = useState<UnitMaster[]>(INITIAL_UNITS);
   const [expenses, setExpenses] = useState<Expense[]>(INITIAL_EXPENSES);
   const [bankAccounts, setBankAccounts] = useState<BankAccount[]>(INITIAL_BANK_ACCOUNTS);
   const [taxConfig, setTaxConfig] = useState<TaxConfiguration>(INITIAL_TAX_CONFIG);
@@ -267,8 +270,18 @@ export default function App() {
     );
   };
 
-  const handleAddItem = (newItem: Item) => {
-    setItems([...items, newItem]);
+  const handleSaveItem = (itemToSave: Item) => {
+    setItems((prev) => {
+      const exists = prev.some((i) => i.id === itemToSave.id);
+      if (exists) {
+        return prev.map((i) => (i.id === itemToSave.id ? itemToSave : i));
+      }
+      return [itemToSave, ...prev];
+    });
+  };
+
+  const handleAddUnit = (newUnit: UnitMaster) => {
+    setUnits((prev) => [...prev, newUnit]);
   };
 
   const handleAddExpense = (newExpense: Expense) => {
@@ -419,7 +432,13 @@ export default function App() {
           )}
 
           {activeTab === 'items' && (
-            <ItemsView items={items} onAddItem={handleAddItem} />
+            <ItemsView
+              items={items}
+              units={units}
+              onAddItem={handleSaveItem}
+              onSaveItem={handleSaveItem}
+              onAddUnit={handleAddUnit}
+            />
           )}
 
           {activeTab === 'sale' && (
