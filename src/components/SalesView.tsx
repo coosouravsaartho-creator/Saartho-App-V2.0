@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Invoice } from '../types';
+import { Invoice, ThemeConfig } from '../types';
 import { TrendingUp, Plus, Search, Filter, Printer, FileText, CheckCircle2, AlertCircle } from 'lucide-react';
 
 interface SalesViewProps {
@@ -8,6 +8,7 @@ interface SalesViewProps {
   onViewInvoice: (inv: Invoice) => void;
   selectedSaleType?: string;
   onSelectSaleType?: (type: string) => void;
+  currentTheme?: ThemeConfig;
 }
 
 export function SalesView({
@@ -16,6 +17,7 @@ export function SalesView({
   onViewInvoice,
   selectedSaleType = 'Sale invoices',
   onSelectSaleType,
+  currentTheme,
 }: SalesViewProps) {
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState<'All' | 'Paid' | 'Unpaid' | 'Overdue'>('All');
@@ -62,9 +64,10 @@ export function SalesView({
               onClick={() => onSelectSaleType && onSelectSaleType(cat)}
               className={`px-3.5 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap transition-all cursor-pointer ${
                 isSelected
-                  ? 'bg-blue-600 text-white shadow-xs'
+                  ? 'text-white shadow-xs'
                   : 'bg-white text-slate-600 hover:text-slate-900 hover:bg-slate-100 border border-slate-200'
               }`}
+              style={isSelected ? { backgroundColor: currentTheme?.primaryColor || '#2563eb' } : undefined}
             >
               {cat}
             </button>

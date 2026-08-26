@@ -22,6 +22,13 @@ export interface ThemeConfig {
   buttonClass: string;
   activeNavClass: string;
   badgeClass: string;
+  appBg: string;
+  cardBorderHex: string;
+  badgeBgHex: string;
+  badgeTextHex: string;
+  tableHeaderBg: string;
+  headerBg: string;
+  activeTabClass: string;
   chartColors: {
     primary: string;
     secondary: string;
@@ -32,7 +39,7 @@ export interface ThemeConfig {
 
 export type ViewMode = 'standard' | 'advanced';
 
-export type FiscalYear = 'FY 2026-27' | 'FY 2025-26' | 'FY 2024-25' | 'Q2 FY 26-27' | 'August 2026' | 'July 2026' | 'Last 7 Days';
+export type FiscalYear = 'FY 2026-27' | 'FY 2025-26' | 'FY 2024-25' | 'Q2 FY 26-27' | 'August 2026' | 'July 2026' | 'Last 7 Days' | 'Custom Date Range';
 
 export type ActiveTab =
   | 'home'

@@ -140,7 +140,7 @@ export function Sidebar({
                     }}
                     className={`flex-1 flex items-center justify-between px-3 py-2 rounded-lg text-xs font-medium transition-colors cursor-pointer ${
                       isActive
-                        ? 'bg-blue-600 text-white shadow-sm font-semibold'
+                        ? currentTheme.activeNavClass
                         : 'text-slate-300 hover:text-white hover:bg-slate-800'
                     }`}
                   >
@@ -225,7 +225,7 @@ export function Sidebar({
                     }}
                     className={`flex-1 flex items-center justify-between px-3 py-2 rounded-lg text-xs font-medium transition-colors cursor-pointer ${
                       isActive
-                        ? 'bg-blue-600 text-white shadow-sm font-semibold'
+                        ? currentTheme.activeNavClass
                         : 'text-slate-300 hover:text-white hover:bg-slate-800'
                     }`}
                   >
@@ -289,7 +289,7 @@ export function Sidebar({
               }}
               className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-xs font-medium transition-colors cursor-pointer ${
                 isActive
-                  ? 'bg-blue-600 text-white shadow-sm font-semibold'
+                  ? currentTheme.activeNavClass
                   : 'text-slate-300 hover:text-white hover:bg-slate-800'
               }`}
             >
@@ -324,7 +324,7 @@ export function Sidebar({
               }}
               className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-xs font-medium transition-colors cursor-pointer ${
                 isActive
-                  ? 'bg-blue-600 text-white shadow-sm font-semibold'
+                  ? currentTheme.activeNavClass
                   : 'text-slate-400 hover:text-white hover:bg-slate-800'
               }`}
             >

@@ -75,6 +75,8 @@ export default function App() {
   const [dashboardViewMode, setDashboardViewMode] = useState<ViewMode>('advanced');
   const [privacyMode, setPrivacyMode] = useState(false);
   const [fiscalYear, setFiscalYear] = useState<FiscalYear>('FY 2026-27');
+  const [customFromDate, setCustomFromDate] = useState<string>('2026-08-01');
+  const [customToDate, setCustomToDate] = useState<string>('2026-08-31');
 
   // Business Data State
   const [invoices, setInvoices] = useState<Invoice[]>(INITIAL_INVOICES);
@@ -109,6 +111,19 @@ export default function App() {
 
   const activeCompany = companies.find((c) => c.id === activeCompanyId) || companies[0];
   const currentTheme = THEMES[currentThemeKey] || THEMES.royal_blue;
+
+  // Set global theme CSS variables on root when theme changes
+  useEffect(() => {
+    const root = document.documentElement;
+    root.style.setProperty('--theme-primary', currentTheme.primaryColor);
+    root.style.setProperty('--theme-secondary', currentTheme.secondaryColor);
+    root.style.setProperty('--theme-app-bg', currentTheme.appBg);
+    root.style.setProperty('--theme-card-border', currentTheme.cardBorderHex);
+    root.style.setProperty('--theme-badge-bg', currentTheme.badgeBgHex);
+    root.style.setProperty('--theme-badge-text', currentTheme.badgeTextHex);
+    root.style.setProperty('--theme-table-header', currentTheme.tableHeaderBg);
+    root.setAttribute('data-theme', currentThemeKey);
+  }, [currentThemeKey, currentTheme]);
 
   // Counts for sidebar badges
   const lowStockCount = items.filter((i) => i.stockQty <= i.minStockLevel).length;
@@ -329,7 +344,10 @@ export default function App() {
   }
 
   return (
-    <div className="flex h-screen w-screen overflow-hidden bg-slate-100 font-sans text-slate-900 select-none">
+    <div
+      className="flex h-screen w-screen overflow-hidden font-sans text-slate-900 select-none transition-colors duration-300"
+      style={{ backgroundColor: currentTheme.appBg }}
+    >
       {/* 1. Left Sidebar with 14-item navigation menu */}
       <Sidebar
         activeTab={activeTab}
@@ -354,58 +372,71 @@ export default function App() {
       />
 
       {/* 2. Main Desktop App Workspace */}
-      <div className="flex flex-col flex-1 h-full overflow-hidden bg-slate-50">
-        {/* Top Header: Desktop Window controls, Search, Quick Actions, Privacy mode & Theme trigger */}
-        <DesktopHeader
-          currentTheme={currentTheme}
-          selectedThemeKey={currentThemeKey}
-          onChangeTheme={(key) => setCurrentThemeKey(key)}
-          viewMode={dashboardViewMode}
-          onToggleViewMode={(mode) => setDashboardViewMode(mode)}
-          privacyMode={privacyMode}
-          onTogglePrivacyMode={() => setPrivacyMode(!privacyMode)}
-          fiscalYear={fiscalYear}
-          onChangeFiscalYear={(fy) => setFiscalYear(fy)}
-          onOpenUniversalSearch={() => setIsSearchModalOpen(true)}
-          onOpenBulkPrint={() => setIsBulkPrintModalOpen(true)}
-          onOpenSaleModal={() => setIsSaleModalOpen(true)}
-          onOpenPurchaseModal={() => setIsPurchaseModalOpen(true)}
-          onOpenPaymentInModal={() => setIsPaymentInModalOpen(true)}
-          onOpenPaymentOutModal={() => setIsPaymentOutModalOpen(true)}
-          onOpenThemeModal={() => setIsThemeModalOpen(true)}
-          companies={companies}
-          activeCompany={activeCompany}
-          onSelectCompany={handleSelectCompany}
-          onOpenCreateCompany={() => setIsCreateCompanyModalOpen(true)}
-          onOpenChangeCompany={() => setIsChangeCompanyModalOpen(true)}
-          onOpenShortcutsModal={() => setIsShortcutsModalOpen(true)}
-          onOpenCompanyProfile={() => setIsCompanyProfileOpen(true)}
-          onLogout={() => setUser(null)}
-        />
-
+      <div
+        className="flex flex-col flex-1 h-full overflow-hidden transition-colors duration-300"
+        style={{ backgroundColor: currentTheme.appBg }}
+      >
         {/* Dynamic Main Viewport Canvas */}
-        <main className="flex-1 overflow-y-auto overflow-x-hidden bg-slate-100/70 custom-scrollbar">
+        <main
+          className="flex-1 overflow-y-auto overflow-x-hidden custom-scrollbar transition-colors duration-300"
+          style={{ backgroundColor: currentTheme.appBg }}
+        >
           {activeTab === 'home' && (
-            <DashboardView
-              invoices={invoices}
-              parties={parties}
-              items={items}
-              expenses={expenses}
-              bankAccounts={bankAccounts}
-              fiscalYear={fiscalYear}
-              viewMode={dashboardViewMode}
-              privacyMode={privacyMode}
-              currentTheme={currentTheme}
-              onNavigateToTab={(tab) => {
-                setIsGroupingViewOpen(false);
-                setActiveTab(tab);
-              }}
-              onOpenSaleModal={() => setIsSaleModalOpen(true)}
-              onOpenPurchaseModal={() => setIsPurchaseModalOpen(true)}
-              onOpenPaymentInModal={() => setIsPaymentInModalOpen(true)}
-              onOpenPaymentOutModal={() => setIsPaymentOutModalOpen(true)}
-              onViewInvoice={(inv) => setSelectedInvoiceForDetail(inv)}
-            />
+            <>
+              {/* Top Header: Rendered ONLY on Dashboard */}
+              <DesktopHeader
+                currentTheme={currentTheme}
+                selectedThemeKey={currentThemeKey}
+                onChangeTheme={(key) => setCurrentThemeKey(key)}
+                viewMode={dashboardViewMode}
+                onToggleViewMode={(mode) => setDashboardViewMode(mode)}
+                privacyMode={privacyMode}
+                onTogglePrivacyMode={() => setPrivacyMode(!privacyMode)}
+                fiscalYear={fiscalYear}
+                onChangeFiscalYear={(fy) => setFiscalYear(fy)}
+                customFromDate={customFromDate}
+                customToDate={customToDate}
+                onCustomFromDateChange={setCustomFromDate}
+                onCustomToDateChange={setCustomToDate}
+                onOpenUniversalSearch={() => setIsSearchModalOpen(true)}
+                onOpenBulkPrint={() => setIsBulkPrintModalOpen(true)}
+                onOpenSaleModal={() => setIsSaleModalOpen(true)}
+                onOpenPurchaseModal={() => setIsPurchaseModalOpen(true)}
+                onOpenPaymentInModal={() => setIsPaymentInModalOpen(true)}
+                onOpenPaymentOutModal={() => setIsPaymentOutModalOpen(true)}
+                onOpenThemeModal={() => setIsThemeModalOpen(true)}
+                companies={companies}
+                activeCompany={activeCompany}
+                onSelectCompany={handleSelectCompany}
+                onOpenCreateCompany={() => setIsCreateCompanyModalOpen(true)}
+                onOpenChangeCompany={() => setIsChangeCompanyModalOpen(true)}
+                onOpenShortcutsModal={() => setIsShortcutsModalOpen(true)}
+                onOpenCompanyProfile={() => setIsCompanyProfileOpen(true)}
+                onLogout={() => setUser(null)}
+              />
+              <DashboardView
+                invoices={invoices}
+                parties={parties}
+                items={items}
+                expenses={expenses}
+                bankAccounts={bankAccounts}
+                fiscalYear={fiscalYear}
+                customFromDate={customFromDate}
+                customToDate={customToDate}
+                viewMode={dashboardViewMode}
+                privacyMode={privacyMode}
+                currentTheme={currentTheme}
+                onNavigateToTab={(tab) => {
+                  setIsGroupingViewOpen(false);
+                  setActiveTab(tab);
+                }}
+                onOpenSaleModal={() => setIsSaleModalOpen(true)}
+                onOpenPurchaseModal={() => setIsPurchaseModalOpen(true)}
+                onOpenPaymentInModal={() => setIsPaymentInModalOpen(true)}
+                onOpenPaymentOutModal={() => setIsPaymentOutModalOpen(true)}
+                onViewInvoice={(inv) => setSelectedInvoiceForDetail(inv)}
+              />
+            </>
           )}
 
           {activeTab === 'parties' && (
@@ -430,6 +461,7 @@ export default function App() {
                 onEditParty={handleEditParty}
                 onOpenPaymentIn={() => setIsPaymentInModalOpen(true)}
                 onOpenPaymentOut={() => setIsPaymentOutModalOpen(true)}
+                currentTheme={currentTheme}
               />
             )
           )}
@@ -451,6 +483,7 @@ export default function App() {
               onViewInvoice={(inv) => setSelectedInvoiceForDetail(inv)}
               selectedSaleType={selectedSaleType}
               onSelectSaleType={setSelectedSaleType}
+              currentTheme={currentTheme}
             />
           )}
 

@@ -1,14 +1,15 @@
 import React, { useState } from 'react';
-import { Invoice, Expense, FiscalYear } from '../types';
+import { Invoice, Expense, FiscalYear, ThemeConfig } from '../types';
 import { BarChart3, FileText, Download, Printer, TrendingUp, TrendingDown, DollarSign } from 'lucide-react';
 
 interface ReportsViewProps {
   invoices: Invoice[];
   expenses: Expense[];
   fiscalYear: FiscalYear;
+  currentTheme?: ThemeConfig;
 }
 
-export function ReportsView({ invoices, expenses, fiscalYear }: ReportsViewProps) {
+export function ReportsView({ invoices, expenses, fiscalYear, currentTheme }: ReportsViewProps) {
   const [activeReport, setActiveReport] = useState<'gstr1' | 'pnl' | 'balance_sheet' | 'daybook'>('pnl');
 
   const sales = invoices.filter((i) => i.type === 'Sale');
@@ -54,32 +55,36 @@ export function ReportsView({ invoices, expenses, fiscalYear }: ReportsViewProps
         <button
           onClick={() => setActiveReport('pnl')}
           className={`px-4 py-2 rounded-lg text-xs font-bold transition-all cursor-pointer ${
-            activeReport === 'pnl' ? 'bg-blue-600 text-white shadow-xs' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+            activeReport === 'pnl' ? 'text-white shadow-xs' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
           }`}
+          style={activeReport === 'pnl' ? { backgroundColor: currentTheme?.primaryColor || '#2563eb' } : undefined}
         >
           Profit &amp; Loss Statement
         </button>
         <button
           onClick={() => setActiveReport('gstr1')}
           className={`px-4 py-2 rounded-lg text-xs font-bold transition-all cursor-pointer ${
-            activeReport === 'gstr1' ? 'bg-blue-600 text-white shadow-xs' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+            activeReport === 'gstr1' ? 'text-white shadow-xs' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
           }`}
+          style={activeReport === 'gstr1' ? { backgroundColor: currentTheme?.primaryColor || '#2563eb' } : undefined}
         >
           GSTR-1 Tax Summary (Outward Supplies)
         </button>
         <button
           onClick={() => setActiveReport('balance_sheet')}
           className={`px-4 py-2 rounded-lg text-xs font-bold transition-all cursor-pointer ${
-            activeReport === 'balance_sheet' ? 'bg-blue-600 text-white shadow-xs' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+            activeReport === 'balance_sheet' ? 'text-white shadow-xs' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
           }`}
+          style={activeReport === 'balance_sheet' ? { backgroundColor: currentTheme?.primaryColor || '#2563eb' } : undefined}
         >
           Balance Sheet
         </button>
         <button
           onClick={() => setActiveReport('daybook')}
           className={`px-4 py-2 rounded-lg text-xs font-bold transition-all cursor-pointer ${
-            activeReport === 'daybook' ? 'bg-blue-600 text-white shadow-xs' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+            activeReport === 'daybook' ? 'text-white shadow-xs' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
           }`}
+          style={activeReport === 'daybook' ? { backgroundColor: currentTheme?.primaryColor || '#2563eb' } : undefined}
         >
           Day Book
         </button>

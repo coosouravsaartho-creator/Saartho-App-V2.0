@@ -40,6 +40,10 @@ interface DesktopHeaderProps {
   onTogglePrivacyMode: () => void;
   fiscalYear: FiscalYear;
   onChangeFiscalYear: (fy: FiscalYear) => void;
+  customFromDate?: string;
+  customToDate?: string;
+  onCustomFromDateChange?: (date: string) => void;
+  onCustomToDateChange?: (date: string) => void;
   onOpenUniversalSearch: () => void;
   onOpenBulkPrint: () => void;
   onOpenSaleModal: () => void;
@@ -67,6 +71,10 @@ export function DesktopHeader({
   onTogglePrivacyMode,
   fiscalYear,
   onChangeFiscalYear,
+  customFromDate,
+  customToDate,
+  onCustomFromDateChange,
+  onCustomToDateChange,
   onOpenUniversalSearch,
   onOpenBulkPrint,
   onOpenSaleModal,
@@ -101,10 +109,11 @@ export function DesktopHeader({
     'FY 2026-27',
     'FY 2025-26',
     'FY 2024-25',
-    'Q2 FY 26-27',
     'August 2026',
     'July 2026',
+    'Q2 FY 26-27',
     'Last 7 Days',
+    'Custom Date Range',
   ];
 
   return (
@@ -309,21 +318,42 @@ export function DesktopHeader({
 
         {/* Right Section: Fiscal Year, View Mode, Theme & Privacy */}
         <div className="flex items-center gap-2 sm:gap-2.5 shrink-0">
-          {/* Financial Year Filter */}
-          <div className="relative inline-flex items-center">
-            <select
-              id="fiscal-year-select"
-              value={fiscalYear}
-              onChange={(e) => onChangeFiscalYear(e.target.value as FiscalYear)}
-              className="pl-2.5 pr-6 py-1.5 text-xs font-semibold text-slate-700 bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-lg focus:ring-1 focus:ring-blue-500 cursor-pointer appearance-none"
-            >
-              {fiscalYears.map((fy) => (
-                <option key={fy} value={fy}>
-                  {fy}
-                </option>
-              ))}
-            </select>
-            <ChevronDown className="w-3 h-3 text-slate-400 absolute right-1.5 pointer-events-none" />
+          {/* Financial Year Filter / Date Range */}
+          <div className="flex items-center gap-2 flex-wrap">
+            <div className="relative inline-flex items-center">
+              <select
+                id="fiscal-year-select"
+                value={fiscalYear}
+                onChange={(e) => onChangeFiscalYear(e.target.value as FiscalYear)}
+                className="pl-2.5 pr-6 py-1.5 text-xs font-semibold text-slate-700 bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-lg focus:ring-1 focus:ring-blue-500 cursor-pointer appearance-none"
+              >
+                {fiscalYears.map((fy) => (
+                  <option key={fy} value={fy}>
+                    {fy === 'FY 2026-27' ? 'FY 2026-27 (1 Apr 26 - 31 Mar 27)' : fy}
+                  </option>
+                ))}
+              </select>
+              <ChevronDown className="w-3 h-3 text-slate-400 absolute right-1.5 pointer-events-none" />
+            </div>
+
+            {fiscalYear === 'Custom Date Range' && (
+              <div className="flex items-center gap-1.5 bg-slate-50 border border-slate-200 rounded-lg px-2 py-1 text-xs">
+                <span className="text-[10px] uppercase font-bold text-slate-400">From:</span>
+                <input
+                  type="date"
+                  value={customFromDate || '2026-08-01'}
+                  onChange={(e) => onCustomFromDateChange && onCustomFromDateChange(e.target.value)}
+                  className="bg-white border border-slate-200 rounded px-1.5 py-0.5 text-xs font-semibold text-slate-700 focus:outline-hidden focus:ring-1 focus:ring-blue-500"
+                />
+                <span className="text-[10px] uppercase font-bold text-slate-400">To:</span>
+                <input
+                  type="date"
+                  value={customToDate || '2026-08-31'}
+                  onChange={(e) => onCustomToDateChange && onCustomToDateChange(e.target.value)}
+                  className="bg-white border border-slate-200 rounded px-1.5 py-0.5 text-xs font-semibold text-slate-700 focus:outline-hidden focus:ring-1 focus:ring-blue-500"
+                />
+              </div>
+            )}
           </div>
 
           {/* Standard vs Advanced Segmented Pill */}

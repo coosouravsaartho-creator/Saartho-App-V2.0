@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Party, PartyGroup } from '../types';
+import { Party, PartyGroup, ThemeConfig } from '../types';
 import {
   Users,
   Plus,
@@ -29,6 +29,7 @@ interface PartiesViewProps {
   onEditParty: (party: Party) => void;
   onOpenPaymentIn: () => void;
   onOpenPaymentOut: () => void;
+  currentTheme?: ThemeConfig;
 }
 
 export function PartiesView({
@@ -40,6 +41,7 @@ export function PartiesView({
   onEditParty,
   onOpenPaymentIn,
   onOpenPaymentOut,
+  currentTheme,
 }: PartiesViewProps) {
   const [filterType, setFilterType] = useState<'All' | 'Customer' | 'Supplier'>('All');
   const [selectedGroupFilter, setSelectedGroupFilter] = useState<string>('All');
@@ -109,7 +111,8 @@ export function PartiesView({
           <button
             id="parties-top-add-buyer-btn"
             onClick={onOpenAddBuyer}
-            className="px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs flex items-center gap-1.5 cursor-pointer shadow-sm transition-all"
+            className="px-4 py-2 rounded-xl text-white font-bold text-xs flex items-center gap-1.5 cursor-pointer shadow-sm transition-all"
+            style={{ backgroundColor: currentTheme?.primaryColor || '#2563eb' }}
           >
             <UserPlus className="w-3.5 h-3.5" />
             <span>1. + Add Buyer</span>
