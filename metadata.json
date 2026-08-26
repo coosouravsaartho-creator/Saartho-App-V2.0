@@ -1,0 +1,6 @@
+{
+  "name": "Saartho",
+  "description": "Desktop Accounting and Billing software for SMBs with automated invoicing, expense tracking, real-time financial reporting, and customizable tax configurations.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
